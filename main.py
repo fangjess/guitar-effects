@@ -7,11 +7,11 @@ import sounddevice as sd
 def callback(indata, outdata, frames, time, status):
     if status:
         print(status)
-    guitar = indata[:, 1]  # channel 1 = input 2 on your interface
+    guitar = indata[:, 1]  # channel 1 for guitar input on my driver
     outdata[:, 0] = guitar
     outdata[:, 1] = guitar
 
-with sd.Stream(device=(12, 12),        # (input_index, output_index) this specifies what input/output device
+with sd.Stream(device=(12, 12),        # (input_index, output_index), 12 for ASIO in/out for me
                samplerate=48000,
                blocksize=256,
                dtype='float32',
