@@ -15,3 +15,6 @@ Reverb: Reverb (freeverb algorithm) implemented with 8 parallel comb filters, si
 - Amp Sim
 - GUI
 - Tuner
+
+## Project Wireframe
+<img width="1179" height="707" alt="GUITAR EFFECTS APP WIREFRAME" src="https://github.com/user-attachments/assets/de16da3d-1b9c-4fd0-8365-4315c69dd281" />
