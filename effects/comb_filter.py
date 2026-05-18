@@ -23,10 +23,11 @@ class CombFilter:
         # fill output array
         for i in range (len(signal)):
 
-            read_pos = self.write_pos
-            output[i] = self.buffer[read_pos]
+            read_pos = self.write_pos # imagine read_pos being exactly 1 cycle behind write_pos
+            output[i] = self.buffer[read_pos] # output what was there
 
-            self.lowpass_state = output[i] * (1 - self.lowpass) + self.lowpass_state * self.lowpass
+            # apply lowpass & amplitude decay then overwrite the old sample:
+            self.lowpass_state = output[i] * (1 - self.lowpass) + self.lowpass_state * self.lowpass # accumulate lowpass filtering
             self.buffer[self.write_pos] = signal[i] + self.lowpass_state * self.g2
 
             self.write_pos = (self.write_pos + 1) % len(self.buffer)
