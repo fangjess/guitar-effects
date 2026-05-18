@@ -11,6 +11,7 @@ SAMPLE_REF = 44100
 
 class Freeverb:
     def __init__(self, g2=0.84, lowpass=0.5, mix=0.3, samplerate=48000): # passing in 48000 by default because that's mine
+        self.enabled = True
         self.mix = mix
         self.g2 = g2
         self.lowpass = lowpass
@@ -26,6 +27,9 @@ class Freeverb:
         ]
 
     def process(self, signal):
+        if not self.enabled:
+            return signal
+        
         dry = signal.copy()
         wet = sum(c.process(signal) for c in self.combs) # sums together output of each comb running in parallel
         wet *= 0.125 # prevent clipping
