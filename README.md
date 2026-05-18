@@ -1,5 +1,5 @@
 # Guitar Effects Processor
-A real-time guitar effects processor built in Python. Audio is captured from an audio interface, processed through a signal chain, and output with near-zero latency using ASIO drivers.
+A real-time guitar effects processor built in Python. Instrument signal is captured from an audio interface and processed through a signal chain.
 
 ## Built With
 - Python
