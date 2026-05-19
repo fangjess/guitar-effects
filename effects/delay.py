@@ -10,6 +10,7 @@ class Delay:
         self.lowpass = lowpass
         self.lowpass_state = 0.0
         self.delay_ms = delay_ms
+        self.delay_samples = int(delay_ms * samplerate / 1000)
         self.feedback = feedback
         self.buffer = np.zeros(int(samplerate*2)) # max 2 second delay
         self.write_pos = 0
@@ -17,7 +18,7 @@ class Delay:
     def set_delay(self, delay_ms):
         self.delay_ms = delay_ms    
         # convert to samples
-        self.delay_samples = int(delay_ms * self.sr / 1000)
+        self.delay_samples = int(delay_ms * self.samplerate / 1000)
 
     def process(self, signal):
         if not self.enabled:
@@ -32,7 +33,7 @@ class Delay:
             self.lowpass_state = delayed_sample * (1 - self.lowpass) + self.lowpass_state * self.lowpass
 
             output[i] = signal[i] + self.lowpass_state * self.mix
-            self.buffer + signal[i] + self.lowpass_state * self.feedback
+            self.buffer[self.write_pos] = signal[i] + self.lowpass_state * self.feedback
 
             self.write_pos = (self.write_pos + 1) % len(self.buffer)
 

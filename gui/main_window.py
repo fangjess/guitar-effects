@@ -2,6 +2,104 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 
+class DelayPedal(QWidget):
+    def __init__(self, delay):
+        super().__init__()
+        self.delay = delay
+        self.delay_ui()
+
+    def delay_ui(self):
+        delayBox = QGroupBox("DELAY")
+        delayBox.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout = QVBoxLayout()
+        
+        # mix
+        self.mixDial = QDial()
+        self.mixDial.setMinimum(0)
+        self.mixDial.setMaximum(100)
+        self.mixDial.setValue(50)
+        self.mixDial.valueChanged.connect(self.onMixChanged)
+        self.mixLabel = QLabel(f"Mix: {self.mixDial.value()}%")
+        self.mixLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.mixDial)
+        layout.addWidget(self.mixLabel)
+
+        # time
+        timeBox = QVBoxLayout()
+        self.timeDial = QDial()
+        self.timeDial.setMinimum(1)
+        self.timeDial.setMaximum(2000)
+        self.timeDial.setValue(500)
+        self.timeDial.valueChanged.connect(self.onTimeChanged)
+        self.timeLabel = QLabel(f"Tone: {self.timeDial.value()}ms")
+        self.timeLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        timeBox.addWidget(self.timeDial)
+        timeBox.addWidget(self.timeLabel)
+
+        # feedback
+        feedbackBox = QVBoxLayout()
+        self.feedbackDial = QDial()
+        self.feedbackDial.setMinimum(0)
+        self.feedbackDial.setMaximum(100)
+        self.feedbackDial.setValue(50)
+        self.feedbackDial.valueChanged.connect(self.onFeedbackChanged)
+        self.feedbackLabel = QLabel(f"Feedback: {self.feedbackDial.value()}%")
+        self.feedbackLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        feedbackBox.addWidget(self.feedbackDial)
+        feedbackBox.addWidget(self.feedbackLabel)
+
+        # tone
+        toneBox = QVBoxLayout()
+        self.toneDial = QDial()
+        self.toneDial.setMinimum(0)
+        self.toneDial.setMaximum(100)
+        self.toneDial.setValue(50)
+        self.toneDial.valueChanged.connect(self.onToneChanged)
+        self.toneLabel = QLabel(f"Tone: {self.toneDial.value()}%")
+        self.toneLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        toneBox.addWidget(self.toneDial)
+        toneBox.addWidget(self.toneLabel)
+
+        parameters = QHBoxLayout()
+        parameters.addLayout(timeBox)
+        parameters.addLayout(feedbackBox)
+        parameters.addLayout(toneBox)
+        layout.addLayout(parameters)
+
+        # on/off
+        self.powerSwitch = QPushButton("ON")
+        self.powerSwitch.setCheckable(True)
+        self.powerSwitch.setChecked(True)
+        self.powerSwitch.toggled.connect(self.onPowerToggled)
+        layout.addWidget(self.powerSwitch)
+
+        delayBox.setLayout(layout)
+        outerLayout = QVBoxLayout()
+        outerLayout.addWidget(delayBox)
+        self.setLayout(outerLayout)
+
+
+    def onMixChanged(self, val):
+        self.delay.mix = val / 100
+        self.mixLabel.setText(f"Mix: {val}%")
+
+    def onTimeChanged(self, val):
+        self.delay.set_delay(val)
+        self.timeLabel.setText(f"Time: {val}ms")
+    
+    def onFeedbackChanged(self, val):
+        self.delay.feedback = val / 100
+        self.feedbackLabel.setText(f"Feedback: {val}%")
+
+    def onToneChanged(self, val):
+        self.delay.lowpass = 1.0 - (val / 100)
+        self.toneLabel.setText(f"Tone: {val}%")
+
+    def onPowerToggled(self, checked):
+        self.delay.enabled  = checked
+        self.powerSwitch.setText("ON" if checked else "OFF")
+
+
 class ReverbPedal(QWidget):
     def __init__(self, reverb):
         super().__init__()
@@ -13,24 +111,16 @@ class ReverbPedal(QWidget):
         reverbBox.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout = QVBoxLayout()
 
-        # title
-        # titleLabel = QLabel("REVERB")
-        # titleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        # layout.addWidget(titleLabel)
-
         # mix knob
         self.mixDial = QDial()
         self.mixDial.setMinimum(0)
         self.mixDial.setMaximum(100)
-        self.mixDial.setValue(30) # because in freeverb init: mix = 0.3
+        self.mixDial.setValue(30)
         self.mixDial.valueChanged.connect(self.onMixChanged)
         self.mixLabel = QLabel(f"Mix: {self.mixDial.value()}%")
         self.mixLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.mixDial)
         layout.addWidget(self.mixLabel)
-
-        # knob layout
-        parameters = QHBoxLayout()
 
         # tone knob
         toneBox = QVBoxLayout()
@@ -56,6 +146,8 @@ class ReverbPedal(QWidget):
         decayBox.addWidget(self.decayDial)
         decayBox.addWidget(self.decayLabel)
 
+        # knob layout
+        parameters = QHBoxLayout()
         parameters.addLayout(toneBox)
         parameters.addLayout(decayBox)
         layout.addLayout(parameters)
@@ -95,11 +187,12 @@ class ReverbPedal(QWidget):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, reverb):
+    def __init__(self, reverb, delay):
         super().__init__()
         self.setWindowTitle("Guitar Effects")
         central = QWidget()
         layout = QHBoxLayout()
+        layout.addWidget(DelayPedal(delay))
         layout.addWidget(ReverbPedal(reverb))
         central.setLayout(layout)
         self.setCentralWidget(central)
