@@ -11,7 +11,8 @@ A real-time guitar effects processor built in Python. Instrument signal is captu
 - PyQt6
 
 ## Implemented
-Reverb: Reverb (freeverb algorithm) implemented with 8 parallel comb filters, single pole lowpass damping and 4 series allpass filters
+- **Reverb**: (freeverb algorithm) implemented with 8 parallel comb filters, single pole lowpass damping and 4 series allpass filters
+- **Delay**: delay algorithm with buffer that repeats samples and attenuates them over time, plus tone parameter
 
 ## Demo Video
 Make sure sound is on!<br>
