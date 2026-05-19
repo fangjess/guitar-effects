@@ -30,9 +30,9 @@ class Delay:
             read_pos = (self.write_pos - self.delay_samples) % len(self.buffer) # makes sure read_pos is delay_samples behind write_pos 
             
             delayed_sample = self.buffer[read_pos]
-            self.lowpass_state = delayed_sample * (1 - self.lowpass) + self.lowpass_state * self.lowpass
+            self.lowpass_state = delayed_sample * (1 - self.lowpass) + self.lowpass_state * self.lowpass # take delayed sample, apply lowpass
 
-            output[i] = signal[i] + self.lowpass_state * self.mix
+            output[i] = signal[i] + self.lowpass_state * self.mix # output is dry signal layered with delayed & filtered sample
             self.buffer[self.write_pos] = signal[i] + self.lowpass_state * self.feedback
 
             self.write_pos = (self.write_pos + 1) % len(self.buffer)

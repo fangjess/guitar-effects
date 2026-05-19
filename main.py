@@ -9,7 +9,7 @@ from effects.delay import Delay
 from gui.main_window import MainWindow
 
 SAMPLE_RATE = 48000
-BUFFER_SIZE = 256
+BUFFER_SIZE = 512
 DEVICE = 12
 
 reverb = Freeverb(g2=0.84, lowpass=0.5, mix=0.3, samplerate=SAMPLE_RATE)
