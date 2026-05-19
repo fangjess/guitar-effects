@@ -1,6 +1,9 @@
 # Guitar Effects Processor
 A real-time guitar effects processor built in Python. Instrument signal is captured from an audio interface and processed through a signal chain.
 
+*Note*: The device number is hardcoded to mine and you will have to query your own input/output devices and change main.py accordingly. Won't work in a DAW yet.<br>
+``python -c "import os; os.environ['SD_ENABLE_ASIO'] = '1'; import sounddevice as sd; print(sd.query_devices())"``
+
 ## Built With
 - Python
 - NumPy / SciPy
@@ -28,7 +31,8 @@ In summary:
 - Coding in Python with PyQt6
 
 ## To add in the future:
-- Delay
+- VST/DAW compatibility
+- Tempo-synced delay
 - Amp Sim
 - GUI
 - Tuner
